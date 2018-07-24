@@ -1,34 +1,93 @@
 package org.cuner.flowframework.core;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
  * Created by houan on 18/7/18.
  */
-public interface Flow {
+public class Flow {
 
     /**
-     * 获取流程名称
-     * @return
+     * 流程名称
      */
-    String getName();
+    private String name;
 
     /**
-     * 获取流程下所有的步骤
-     * @return
+     * 流程下所有的步骤
      */
-    List<Step> getAllSteps();
+    private List<Step> steps;
 
     /**
-     * 获取流程下所有的子流程
-     * @return
+     * 执行器
      */
-    List<Flow> getSubFlows();
+    private Executor executor;
 
     /**
-     * 设置执行器
-     * @param executor
+     * 流程执行
+     * @param context
      */
-    void setExecutor(Executor executor);
+    public void execute(FlowContext context) {
+        if (null == steps) {
+            return;
+        }
+
+        Step step = steps.get(0);
+        do {
+            if (!step.isAsyn()) {
+                step.execute(context);
+            } else {
+                final Step nextStep = step;
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        nextStep.execute(context);
+                    }
+                });
+            }
+
+            step = step.next(context);
+        } while (step != null);
+
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Step> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
+    }
+
+    public Executor getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
+    }
+
+    public List<Flow> getSubFlows() {
+        if (null == steps){
+            return new ArrayList<>();
+        }
+        List<Flow> subFlows = new ArrayList<>();
+        for (Step step : steps){
+            Flow subFlow = step.getSubFlow();
+            if (null != subFlow){
+                subFlows.add(subFlow);
+            }
+        }
+        return subFlows;
+    }
+
 }
