@@ -81,6 +81,22 @@ public class FlowDefinition implements Definition {
         return instance;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<StepDefinition> getStepDefinitionList() {
+        return stepDefinitionList;
+    }
+
+    public void setStepDefinitionList(List<StepDefinition> stepDefinitionList) {
+        this.stepDefinitionList = stepDefinitionList;
+    }
+
     @Override
     public String toString() {
         return "FlowDefinition{" +
