@@ -14,9 +14,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.StringUtils;
 
 import java.io.InputStream;
@@ -28,11 +26,9 @@ import java.util.Map;
 /**
  * Created by houan on 18/7/16.
  */
-public class XmlFlowParser implements ApplicationContextAware {
+public class XmlParser {
 
-    private ApplicationContext applicationContext;
-
-    Map<String, Flow> parse(List<String> flowFiles) throws InvalidConfigException, DocumentException {
+    public static Map<String, Flow> parse(List<String> flowFiles, ApplicationContext applicationContext) throws InvalidConfigException, DocumentException {
         Map<String, Flow> flowMap = new HashMap<>();
         List<FlowDefinition> flowDefinitionList = new ArrayList<>();
         for (String file : flowFiles) {
@@ -62,11 +58,11 @@ public class XmlFlowParser implements ApplicationContextAware {
         return flowMap;
     }
 
-    private List<FlowDefinition> parseFile(String file) throws DocumentException {
+    private static List<FlowDefinition> parseFile(String file) throws DocumentException {
         List<FlowDefinition> flowDefinitionList = new ArrayList<>();
         // get document
         SAXReader saxReader = new SAXReader();
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(file);
+        InputStream inputStream = ClassLoader.getSystemResourceAsStream(file);
         Document doc = saxReader.read(inputStream);
         List flowElements = doc.getRootElement().elements();
 
@@ -80,7 +76,7 @@ public class XmlFlowParser implements ApplicationContextAware {
         return flowDefinitionList;
     }
 
-    private FlowDefinition parseFlow(Element element) {
+    private static FlowDefinition parseFlow(Element element) {
         String flowName = getNodeAttribute(element, "name", true);
         List<StepDefinition> stepDefinitionList = new ArrayList<>();
         for (Object o : element.elements()) {
@@ -93,7 +89,7 @@ public class XmlFlowParser implements ApplicationContextAware {
         return new FlowDefinition(flowName, stepDefinitionList);
     }
 
-    private StepDefinition parseStep(Element element) {
+    private static StepDefinition parseStep(Element element) {
         String stepName = getNodeAttribute(element, "name", true);
         String asyn = getNodeAttribute(element, "asyn", false);
         String action = getNodeAttribute(element, "action", false);
@@ -129,7 +125,7 @@ public class XmlFlowParser implements ApplicationContextAware {
         return stepDefinition;
     }
 
-    private TransitionDefinition parseTransition(Element element) {
+    private static TransitionDefinition parseTransition(Element element) {
         switch (element.getName().toLowerCase()) {
             case "conditionTransition":
                 String to = getNodeAttribute(element, "to", true);
@@ -146,7 +142,7 @@ public class XmlFlowParser implements ApplicationContextAware {
         }
     }
 
-    private ConditionDefinition parseCondition(Element element) {
+    private static ConditionDefinition parseCondition(Element element) {
         List<ConditionDefinition> conditionDefinitionList = new ArrayList<>();
         switch (element.getName().toLowerCase()) {
             case "condition":
@@ -172,7 +168,7 @@ public class XmlFlowParser implements ApplicationContextAware {
         }
     }
 
-    private String getNodeAttribute(Element element, String key, boolean required) {
+    private static String getNodeAttribute(Element element, String key, boolean required) {
         Attribute attribute = element.attribute(key);
         if (required && (attribute == null || attribute.getValue() == null)) {
             throw new IllegalStateException("节点属性:" + attribute + " 不能为空!" + element.toString());
@@ -180,8 +176,4 @@ public class XmlFlowParser implements ApplicationContextAware {
         return attribute == null || attribute.getValue() == null ? null : attribute.getValue();
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 }

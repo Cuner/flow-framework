@@ -39,12 +39,7 @@ public class Flow {
                 step.execute(context);
             } else {
                 final Step nextStep = step;
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        nextStep.execute(context);
-                    }
-                });
+                executor.execute(() -> nextStep.execute(context));
             }
 
             step = step.next(context);
