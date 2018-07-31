@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<flows>
+<flows xmlns="http://repo.cuner.com/schema/flow">
     <flow name="orderSyncNoSubFlow">
         <step name="step1" action="action1"/>
         <step name="step2" action="action2"/>
