@@ -110,39 +110,39 @@ public class FlowManager implements ApplicationListener<ApplicationContextEvent>
     /*
      * 流程Action校验, 同一个流程中的所有step的Action必须继承相同的FlowAction接口
      */
-    private Type validateFlow(Flow flow){
+    private Type validateFlow(Flow flow) {
         Type type = null;
 
         List<Step> steps = flow.getSteps();
-        if (null == steps){
+        if (null == steps) {
             throw new IllegalStateException("flow: " + flow.getName() + " has no steps!");
         }
         Type genericDataType = null;
         Type genericResultType = null;
-        for (Step step : steps){
+        for (Step step : steps) {
             Action action = step.getAction();
-            if (null == action){
+            if (null == action) {
                 continue;
             }
 
-            if (!Action.class.isAssignableFrom(action.getClass())){
+            if (!Action.class.isAssignableFrom(action.getClass())) {
                 throw new IllegalStateException("Action class:" + action.getClass().getName() + " must implement the FlowAction interface!");
             }
 
             try {
                 Method method = action.getClass().getMethod("execute", FlowContext.class);
                 Type[] types = method.getGenericParameterTypes();
-                Type[] params = ((ParameterizedType)types[0]).getActualTypeArguments();
+                Type[] params = ((ParameterizedType) types[0]).getActualTypeArguments();
 
-                if (null == genericDataType){
+                if (null == genericDataType) {
                     genericDataType = params[0];
-                } else if (!params[0].equals(genericDataType)){
+                } else if (!params[0].equals(genericDataType)) {
                     throw new IllegalStateException("flow:" + flow.getName() + " has different Action generic parameter types!");
                 }
 
-                if (null == genericResultType){
+                if (null == genericResultType) {
                     genericResultType = params[1];
-                } else if (!params[1].equals(genericResultType)){
+                } else if (!params[1].equals(genericResultType)) {
                     throw new IllegalStateException("flow:" + flow.getName() + " has different Action generic result types!");
                 }
 
@@ -150,9 +150,9 @@ public class FlowManager implements ApplicationListener<ApplicationContextEvent>
                 //不太可能出现这种异常
             }
         }
-        if (null != genericDataType){
+        if (null != genericDataType) {
             if (genericDataType instanceof ParameterizedType) {
-               type =((ParameterizedType)genericDataType).getRawType();
+                type = ((ParameterizedType) genericDataType).getRawType();
             } else {
                 type = genericDataType;
             }
