@@ -90,6 +90,7 @@ public class Step {
         }
 
         if (action != null) {
+            context.setStep(this);
             action.execute(context.createFlowContext());
         } else if (subFlow != null) {
             FlowContext copiedContext = context.copy();
