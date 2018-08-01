@@ -38,7 +38,7 @@
                     <xsd:element ref="orCondition"/>
                 </xsd:choice>
                 <xsd:choice minOccurs="0">
-                    <xsd:element ref="sequenceTransition" maxOccurs="1"/>
+                    <xsd:element ref="orderTransition" maxOccurs="1"/>
                     <xsd:sequence maxOccurs="unbounded">
                         <xsd:element ref="conditionTransition"/>
                     </xsd:sequence>
@@ -128,7 +128,7 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="sequenceTransition">
+    <xsd:element name="orderTransition">
         <xsd:complexType>
             <xsd:attribute name="to" type="xsd:string" use="required">
                 <xsd:annotation>

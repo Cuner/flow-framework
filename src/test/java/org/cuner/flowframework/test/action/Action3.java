@@ -11,13 +11,10 @@ import org.cuner.flowframework.test.domain.Result;
 public class Action3 implements Action<Data, Result> {
     @Override
     public void execute(FlowContext<Data, Result> context) {
-        System.out.println("before execute, data: " + context.getData() + " result: " + context.getResult());
         if (context.getResult() == null) {
             context.setResult(new Result());
         }
-        context.getData().setData("action3 change Data");
         context.getResult().setResult(context.getData().getData());
-        System.out.println("action3");
-        System.out.println("after execute, data: " + context.getData() + " result: " + context.getResult());
+        System.out.println("----------flow: " +  context.getFlowName() + " step: " + context.getStepName() + " action: " + this.getClass().getSimpleName() + "----------");
     }
 }

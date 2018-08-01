@@ -28,11 +28,6 @@ public class FlowContext<T, R> {
     private Step step;
 
     /**
-     * 是否异步执行
-     */
-    private boolean asyn = false;
-
-    /**
      * 自定义参数
      */
     private ConcurrentHashMap<String, Object> parameters = new ConcurrentHashMap<>();
@@ -84,7 +79,6 @@ public class FlowContext<T, R> {
         flowContext.setFlow(this.flow);
         flowContext.setStep(this.step);
         flowContext.setData(this.data);
-        flowContext.setAsyn(this.asyn);
         flowContext.setResult(null);
         flowContext.setParameters(this.parameters);
         return flowContext;
@@ -123,14 +117,6 @@ public class FlowContext<T, R> {
         this.step = step;
     }
 
-    public boolean isAsyn() {
-        return asyn;
-    }
-
-    public void setAsyn(boolean asyn) {
-        this.asyn = asyn;
-    }
-
     public ConcurrentHashMap<String, Object> getParameters() {
         return parameters;
     }
@@ -162,7 +148,6 @@ public class FlowContext<T, R> {
                 ", result=" + result +
                 ", flow=" + flow +
                 ", step=" + step +
-                ", asyn=" + asyn +
                 ", parameters=" + parameters +
                 '}';
     }

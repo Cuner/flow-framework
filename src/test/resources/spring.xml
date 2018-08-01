@@ -11,7 +11,7 @@
     <bean id="flowManager" class="org.cuner.flowframework.core.manager.FlowManager">
         <property name="flowFiles">
             <list>
-                <value>case1/orderSyncNoSubFlow.xml</value>
+                <value>flow.xml</value>
             </list>
         </property>
     </bean>

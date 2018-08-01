@@ -34,7 +34,7 @@ public class Step {
     /**
      * 步骤代表的子流程
      */
-    private Flow subFlow;
+    private Flow subflow;
 
     /**
      * 该步骤执行结束后的符合所有条件的流转信息(因为什么条件流程到什么步骤)
@@ -92,12 +92,11 @@ public class Step {
         if (action != null) {
             context.setStep(this);
             action.execute(context.createFlowContext());
-        } else if (subFlow != null) {
+        } else if (subflow != null) {
             FlowContext copiedContext = context.copy();
-            copiedContext.setFlow(subFlow);
+            copiedContext.setFlow(subflow);
             copiedContext.setStep(null);
-            copiedContext.setAsyn(this.asyn);
-            subFlow.execute(copiedContext);
+            subflow.execute(copiedContext);
         }
 
     }
@@ -135,12 +134,12 @@ public class Step {
         this.action = action;
     }
 
-    public Flow getSubFlow() {
-        return subFlow;
+    public Flow getSubflow() {
+        return subflow;
     }
 
-    public void setSubFlow(Flow subFlow) {
-        this.subFlow = subFlow;
+    public void setSubflow(Flow subflow) {
+        this.subflow = subflow;
     }
 
     public List<Transition> getTransitionList() {
@@ -158,7 +157,7 @@ public class Step {
                 ", asyn=" + asyn +
                 ", condition=" + condition +
                 ", action=" + action +
-                ", subFlow=" + subFlow +
+                ", subflow=" + subflow +
                 ", transitionList=" + transitionList +
                 '}';
     }

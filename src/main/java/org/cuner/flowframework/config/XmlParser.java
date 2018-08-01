@@ -49,8 +49,8 @@ public class XmlParser {
                 if (!StringUtils.isEmpty(stepDefinition.getAction())) {
                     stepDefinition.getInstance().setAction((Action) applicationContext.getBean(stepDefinition.getAction()));
                 }
-                if (!StringUtils.isEmpty(stepDefinition.getSubFlow())) {
-                    stepDefinition.getInstance().setSubFlow(flowMap.get(stepDefinition.getSubFlow()));
+                if (!StringUtils.isEmpty(stepDefinition.getSubflow())) {
+                    stepDefinition.getInstance().setSubflow(flowMap.get(stepDefinition.getSubflow()));
                 }
             }
         }
@@ -93,7 +93,7 @@ public class XmlParser {
         String stepName = getNodeAttribute(element, "name", true);
         String asyn = getNodeAttribute(element, "asyn", false);
         String action = getNodeAttribute(element, "action", false);
-        String subFlow = getNodeAttribute(element, "subFlow", false);
+        String subflow = getNodeAttribute(element, "subflow", false);
 
         ConditionDefinition conditionDefinition = null;
         List<TransitionDefinition> transitionDefinitionList = new ArrayList<>();
@@ -118,7 +118,7 @@ public class XmlParser {
         stepDefinition.setName(stepName);
         stepDefinition.setAsyn(asyn);
         stepDefinition.setAction(action);
-        stepDefinition.setSubFlow(subFlow);
+        stepDefinition.setSubflow(subflow);
         stepDefinition.setConditionDefinition(conditionDefinition);
         stepDefinition.setTransitionDefinitionList(transitionDefinitionList);
 
@@ -148,7 +148,7 @@ public class XmlParser {
             case "condition":
                 String key = getNodeAttribute(element, "key", true);
                 String value = getNodeAttribute(element, "value", true);
-                String compareType = getNodeAttribute(element, "compareType", true);
+                String compareType = getNodeAttribute(element, "comparator", true);
                 return new DefaultConditionDefinition(key, value, compareType);
             case "expCondition":
                 String express = getNodeAttribute(element, "express", true);

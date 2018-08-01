@@ -53,7 +53,7 @@ public class FlowManager implements ApplicationListener<ApplicationContextEvent>
                 this.flowMap = XmlParser.parse(flowFiles, applicationContext);
 
                 //校验子流程, 为了防止出现死循环
-                this.flowMap.values().forEach(flow -> checkSubFlow(flow.getSubFlows(), flow.getName()));
+                this.flowMap.values().forEach(flow -> checkSubFlow(flow.getSubflows(), flow.getName()));
                 this.flowMap.values().forEach(flow -> flowDataTypeMap.put(flow, validateFlow(flow)));
 
                 executorService = new ThreadPoolExecutor(5,
@@ -97,12 +97,12 @@ public class FlowManager implements ApplicationListener<ApplicationContextEvent>
     }
 
     //流程包含子流程 校验子流程, 为了防止出现死循环：子流程不能为父流程
-    private void checkSubFlow(List<Flow> subFlowList, String parentFlow) {
-        if (CollectionUtils.isNotEmpty(subFlowList)) {
-            if (subFlowList.stream().anyMatch(flow -> flow.getName().equals(parentFlow))) {
+    private void checkSubFlow(List<Flow> subflowList, String parentFlow) {
+        if (CollectionUtils.isNotEmpty(subflowList)) {
+            if (subflowList.stream().anyMatch(flow -> flow.getName().equals(parentFlow))) {
                 throw new IllegalArgumentException("flow is in endless loop");
             } else {
-                subFlowList.forEach(flow -> checkSubFlow(flow.getSubFlows(), parentFlow));
+                subflowList.forEach(flow -> checkSubFlow(flow.getSubflows(), parentFlow));
             }
         }
     }

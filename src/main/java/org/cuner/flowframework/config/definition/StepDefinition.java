@@ -23,7 +23,7 @@ public class StepDefinition implements Definition {
 
     private String action;
 
-    private String subFlow;
+    private String subflow;
 
     private List<TransitionDefinition> transitionDefinitionList;
 
@@ -35,11 +35,11 @@ public class StepDefinition implements Definition {
             return false;
         }
 
-        if (StringUtils.isEmpty(action) && StringUtils.isEmpty(subFlow)) {
+        if (StringUtils.isEmpty(action) && StringUtils.isEmpty(subflow)) {
             return false;
         }
 
-        if (!StringUtils.isEmpty(action) && !StringUtils.isEmpty(subFlow)) {
+        if (!StringUtils.isEmpty(action) && !StringUtils.isEmpty(subflow)) {
             return false;
         }
 
@@ -72,7 +72,7 @@ public class StepDefinition implements Definition {
             instance.setTransitionList(transitionList);
         }
 
-        //step的action和subFlow后面注入
+        //step的action和subflow后面注入
         return instance;
 
     }
@@ -109,12 +109,12 @@ public class StepDefinition implements Definition {
         this.action = action;
     }
 
-    public String getSubFlow() {
-        return subFlow;
+    public String getSubflow() {
+        return subflow;
     }
 
-    public void setSubFlow(String subFlow) {
-        this.subFlow = subFlow;
+    public void setSubflow(String subflow) {
+        this.subflow = subflow;
     }
 
     public List<TransitionDefinition> getTransitionDefinitionList() {
@@ -136,7 +136,7 @@ public class StepDefinition implements Definition {
                 ", asyn='" + asyn + '\'' +
                 ", conditionDefinition=" + conditionDefinition +
                 ", action='" + action + '\'' +
-                ", subFlow='" + subFlow + '\'' +
+                ", subflow='" + subflow + '\'' +
                 ", transitionDefinitionList=" + transitionDefinitionList +
                 '}';
     }

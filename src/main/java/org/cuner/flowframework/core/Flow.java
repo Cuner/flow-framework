@@ -71,18 +71,18 @@ public class Flow {
         this.executor = executor;
     }
 
-    public List<Flow> getSubFlows() {
+    public List<Flow> getSubflows() {
         if (null == steps){
             return new ArrayList<>();
         }
-        List<Flow> subFlows = new ArrayList<>();
+        List<Flow> subflows = new ArrayList<>();
         for (Step step : steps){
-            Flow subFlow = step.getSubFlow();
-            if (null != subFlow){
-                subFlows.add(subFlow);
+            Flow subflow = step.getSubflow();
+            if (null != subflow){
+                subflows.add(subflow);
             }
         }
-        return subFlows;
+        return subflows;
     }
 
 }

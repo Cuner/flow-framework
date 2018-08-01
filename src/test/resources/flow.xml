@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flows xmlns="http://repo.cuner.com/schema/flow">
+    <flow name="mainFlow">
+        <step name="step1" action="action1"/>
+        <step name="step2" action="action2" asyn="true"/>
+        <step name="step3" subflow="subflow"/>
+        <step name="step4" subflow="subflow" asyn="true"/>
+        <step name="step5" action="action3">
+            <condition key="data" value="test" comparator="eq"/>
+        </step>
+        <step name="step6" action="action3">
+            <expCondition expression='data.getData() == "test" '/>
+        </step>
+        <step name="step7" action="action3">
+            <andCondition>
+                <condition key="data" value="test" comparator="eq"/>
+            </andCondition>
+        </step>
+        <step name="step8" action="action3">
+            <orderTransition to="step9"/>
+        </step>
+        <step name="step9" action="action3">
+            <conditionTransition to="step10">
+                <condition key="data" value="test" comparator="eq"/>
+            </conditionTransition>
+        </step>
+        <step name="step10" action="action3">
+            <expCondition expression='parameters.get("params") == 1'/>
+        </step>
+    </flow>
+
+    <flow name="subflow">
+        <step name="sub_step1" action="action1"/>
+        <step name="sub_step2" action="action2"/>
+    </flow>
+</flows>
