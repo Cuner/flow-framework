@@ -3,6 +3,8 @@ package org.cuner.flowframework.core;
 import org.apache.commons.collections.CollectionUtils;
 import org.cuner.flowframework.core.transition.Transition;
 import org.cuner.flowframework.core.transition.condition.Condition;
+import org.cuner.flowframework.support.log.Execution;
+import org.cuner.flowframework.support.log.ExecutionType;
 
 import java.util.List;
 
@@ -81,22 +83,35 @@ public class Step {
 
     /**
      * 步骤执行
-     * @param context
+     * @param context 执行上下文
+     * @param execution 上游执行流程节点
      */
     @SuppressWarnings("all")
-    public void execute(FlowContext context) {
+    public void execute(FlowContext context, Execution execution) {
         if (condition != null && !condition.match(context)) {
             return;
         }
 
-        if (action != null) {
-            context.setStep(this);
-            action.execute(context.createFlowContext());
-        } else if (subflow != null) {
-            FlowContext copiedContext = context.copy();
-            copiedContext.setFlow(subflow);
-            copiedContext.setStep(null);
-            subflow.execute(copiedContext);
+        Execution stepExecution = new Execution();
+        stepExecution.setName(this.name);
+        stepExecution.setStartTime(System.currentTimeMillis());
+        stepExecution.setAsyn(this.asyn);
+        stepExecution.setExecutionType(ExecutionType.STEP);
+
+        execution.getChildren().add(stepExecution);
+
+        try {
+            if (action != null) {
+                context.setStep(this);
+                action.execute(context.createFlowContext());
+            } else if (subflow != null) {
+                FlowContext copiedContext = context.copy();
+                copiedContext.setFlow(subflow);
+                copiedContext.setStep(null);
+                subflow.execute(copiedContext, stepExecution);
+            }
+        } finally {
+            stepExecution.setEndTime(System.currentTimeMillis());
         }
 
     }

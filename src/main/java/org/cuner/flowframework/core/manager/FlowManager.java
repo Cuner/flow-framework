@@ -6,6 +6,9 @@ import org.cuner.flowframework.core.Action;
 import org.cuner.flowframework.core.Flow;
 import org.cuner.flowframework.core.FlowContext;
 import org.cuner.flowframework.core.Step;
+import org.cuner.flowframework.support.log.Execution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -37,6 +40,8 @@ public class FlowManager implements ApplicationListener<ApplicationContextEvent>
     private ApplicationContext applicationContext;
 
     private Map<Flow, Type> flowDataTypeMap = new HashMap<>();
+
+    private Logger logger = LoggerFactory.getLogger("flow-record");
 
     public FlowManager() {
     }
@@ -92,7 +97,12 @@ public class FlowManager implements ApplicationListener<ApplicationContextEvent>
             throw new IllegalArgumentException("input data type or result data is not compatible with action generic type! ");
         }
 
-        flow.execute(flowContext);
+        try {
+            flow.execute(flowContext, null);
+        } finally {
+            logger.info(Execution.getExecutionString(flowContext.getExecution(), 0));
+        }
+
         return flowContext.getResult();
     }
 

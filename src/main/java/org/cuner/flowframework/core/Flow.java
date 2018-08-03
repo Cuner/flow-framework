@@ -1,5 +1,8 @@
 package org.cuner.flowframework.core;
 
+import org.cuner.flowframework.support.log.Execution;
+import org.cuner.flowframework.support.log.ExecutionType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -26,24 +29,41 @@ public class Flow {
 
     /**
      * 流程执行
-     * @param context
+     * @param context 上下问
+     * @param execution 上游执行流程节点
      */
-    public void execute(FlowContext context) {
+    public void execute(FlowContext context, Execution execution) {
         if (null == steps) {
             return;
         }
 
-        Step step = steps.get(0);
-        do {
-            if (!step.isAsyn()) {
-                step.execute(context);
-            } else {
-                final Step nextStep = step;
-                executor.execute(() -> nextStep.execute(context));
-            }
+        Execution flowExecution = new Execution();
+        flowExecution.setName(this.name);
+        flowExecution.setStartTime(System.currentTimeMillis());
 
-            step = step.next(context);
-        } while (step != null);
+        if (execution == null) {
+            flowExecution.setExecutionType(ExecutionType.FLOW);
+            context.setExecution(flowExecution);
+        } else {
+            flowExecution.setExecutionType(ExecutionType.SUBFLOW);
+            execution.getChildren().add(flowExecution);
+        }
+
+        try {
+            Step step = steps.get(0);
+            do {
+                if (!step.isAsyn()) {
+                    step.execute(context, flowExecution);
+                } else {
+                    final Step nextStep = step;
+                    executor.execute(() -> nextStep.execute(context, flowExecution));
+                }
+
+                step = step.next(context);
+            } while (step != null);
+        } finally {
+            flowExecution.setEndTime(System.currentTimeMillis());
+        }
 
     }
 

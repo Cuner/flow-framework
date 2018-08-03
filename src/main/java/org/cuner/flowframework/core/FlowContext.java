@@ -1,5 +1,7 @@
 package org.cuner.flowframework.core;
 
+import org.cuner.flowframework.support.log.Execution;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -31,6 +33,11 @@ public class FlowContext<T, R> {
      * 自定义参数
      */
     private ConcurrentHashMap<String, Object> parameters = new ConcurrentHashMap<>();
+
+    /**
+     * 执行路径
+     */
+    private Execution execution;
 
     /*
      * 构造一个业务方不能修改的流程上下文，防止业务方干预流程执行过程
@@ -139,6 +146,14 @@ public class FlowContext<T, R> {
 
     public Object getParameter(String key) {
         return parameters.get(key);
+    }
+
+    public Execution getExecution() {
+        return execution;
+    }
+
+    public void setExecution(Execution execution) {
+        this.execution = execution;
     }
 
     @Override
