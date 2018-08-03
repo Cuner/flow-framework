@@ -3,6 +3,7 @@ package org.cuner.flowframework.core;
 import org.cuner.flowframework.support.log.Execution;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by houan on 18/7/19.
@@ -38,6 +39,11 @@ public class FlowContext<T, R> {
      * 执行路径
      */
     private Execution execution;
+
+    /**
+     * 闭锁 用于触发异步任务全部完成
+     */
+    private CountDownLatch countDownLatch;
 
     /*
      * 构造一个业务方不能修改的流程上下文，防止业务方干预流程执行过程
@@ -88,6 +94,7 @@ public class FlowContext<T, R> {
         flowContext.setData(this.data);
         flowContext.setResult(null);
         flowContext.setParameters(this.parameters);
+        flowContext.setCountDownLatch(countDownLatch);
         return flowContext;
     }
 
@@ -154,6 +161,14 @@ public class FlowContext<T, R> {
 
     public void setExecution(Execution execution) {
         this.execution = execution;
+    }
+
+    public CountDownLatch getCountDownLatch() {
+        return countDownLatch;
+    }
+
+    public void setCountDownLatch(CountDownLatch countDownLatch) {
+        this.countDownLatch = countDownLatch;
     }
 
     @Override

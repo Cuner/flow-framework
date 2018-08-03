@@ -30,7 +30,7 @@
     </flow>
 
     <flow name="subflow">
-        <step name="sub_step1" action="action1"/>
+        <step name="sub_step1" action="action1" asyn="true"/>
         <step name="sub_step2" action="action2"/>
     </flow>
 </flows>

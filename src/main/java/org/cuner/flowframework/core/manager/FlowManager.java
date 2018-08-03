@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -87,8 +88,16 @@ public class FlowManager implements ApplicationListener<ApplicationContextEvent>
         }
 
         flow.setExecutor(executorService);
+        for (Flow subflow : flow.getSubflows()) {
+            subflow.setExecutor(executorService);
+        }
 
         FlowContext<T, R> flowContext = new FlowContext<>();
+
+        //get all aync step count
+        int ayncStepCount = getFlowAyncStepCount(flow);
+        flowContext.setCountDownLatch(new CountDownLatch(ayncStepCount));
+
         flowContext.setData(data);
         flowContext.setFlow(flow);
 
@@ -99,11 +108,28 @@ public class FlowManager implements ApplicationListener<ApplicationContextEvent>
 
         try {
             flow.execute(flowContext, null);
+            flowContext.getCountDownLatch().await();
+        } catch (InterruptedException e) {
+            return flowContext.getResult();
         } finally {
             logger.info(Execution.getExecutionString(flowContext.getExecution(), 0));
         }
 
         return flowContext.getResult();
+    }
+
+    private int getFlowAyncStepCount(Flow flow) {
+        int count = 0;
+        for (Step step : flow.getSteps()) {
+            if (step.isAsyn()) {
+                count++;
+            }
+            if (!StringUtils.isEmpty(step.getSubflow())) {
+                count += getFlowAyncStepCount(step.getSubflow());
+            }
+        }
+
+        return count;
     }
 
     //流程包含子流程 校验子流程, 为了防止出现死循环：子流程不能为父流程

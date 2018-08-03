@@ -110,6 +110,10 @@ public class Step {
                 copiedContext.setStep(null);
                 subflow.execute(copiedContext, stepExecution);
             }
+
+            if (this.asyn) {
+                context.getCountDownLatch().countDown();
+            }
         } finally {
             stepExecution.setEndTime(System.currentTimeMillis());
         }
