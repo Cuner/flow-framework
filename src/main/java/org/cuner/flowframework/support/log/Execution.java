@@ -5,6 +5,7 @@ import org.cuner.flowframework.support.ThreadLocalDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 public class Execution {
     /**
@@ -32,7 +33,7 @@ public class Execution {
      */
     private boolean asyn;
 
-    private List<Execution> children = new ArrayList<>();
+    private Vector<Execution> children = new Vector<>();
 
     public ExecutionType getExecutionType() {
         return executionType;
@@ -50,7 +51,7 @@ public class Execution {
         return endTime;
     }
 
-    public List<Execution> getChildren() {
+    public Vector<Execution> getChildren() {
         return children;
     }
 
@@ -68,10 +69,6 @@ public class Execution {
 
     public void setEndTime(long endTime) {
         this.endTime = endTime;
-    }
-
-    public void setChildren(List<Execution> children) {
-        this.children = children;
     }
 
     public boolean isAsyn() {
